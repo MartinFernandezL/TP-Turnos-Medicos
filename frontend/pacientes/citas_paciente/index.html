@@ -36,19 +36,11 @@
             const container = document.getElementById("citas");
             for (let index = 0; index < content.length; index++) {
                 const item = document.createElement("p");
-                item.innerHTML = `Doctor: ${content[index].doctor}  - Especialidad: ${content[index].especialidad} - Fecha: ${content[index].fecha_cita} - Hora: ${content[index].hora_cita}`;
+                item.innerHTML = `Doctor: ${content[index].doctor}  - Especialidad: ${content[index].especialidad} - Fecha: ${content[index].fecha_cita} - Hora: ${content[index].hora_cita} <button class="btn btn-danger" onclick="remove_character(${content[index].id_cita})">Cancelar</button>`;
 
                   
 
                 container.append(item);
-                const button = document.createElement("button");
-                button.innerText = "Cancelar";
-                button.onclick = () => {
-                    location.href = "#";
-                    
-                };
-
-                item.appendChild(button); 
             }
         }
 
@@ -60,6 +52,8 @@
         let params = window.location.search;
         let id = new URLSearchParams(params).get("id");
 
+
+
         fetch("http://localhost:5000/pacientes/"+id)
             .then(response_received)
             .then(parse_data)
@@ -69,6 +63,33 @@
         .then(response_received)
         .then(parse_citas)
         .catch(request_error)
+
+
+
+
+        function delete_response(data) {
+            if (data.success) {
+                alert("An error has occurred. Try again")
+            } else {
+                alert("Character removed successfully")
+                window.location.href = "?id="+id;
+            }
+        }
+
+
+        function remove_character(cita) {
+            const confirmation = confirm(`Are you sure you want to remove character ${cita}?`)
+            if (!confirmation) {
+                return;
+            }
+            fetch(
+                `http://localhost:5000/citas/${cita}`,
+                { method: "DELETE" }
+            )
+                .then((res) => res.json()) // === response_received
+                .then(delete_response)
+                .catch(request_error)
+        }
 
     </script>
 </body>

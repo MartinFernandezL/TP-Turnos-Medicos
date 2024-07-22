@@ -96,7 +96,7 @@ def citas_de_paciente(id_paciente):
         citas_data = []
         for (cita, doctor) in citas:
             cita_data = {
-                'id': cita.id,
+                'id_cita': cita.id,
                 'especialidad': doctor.especialidad,
                 'doctor': doctor.nombre,
                 'fecha_cita': cita.fecha_cita,
@@ -130,6 +130,23 @@ def crear_cita(id_paciente, id_doctor):
         return jsonify({"mensaje": "No se pudo registrar la cita"})
 
 
+#Borrar Cita
+@app.route("/citas/<id_cita>", methods=["DELETE"])
+def eliminar_cita(id_cita):
+    try:
+        # Busca la cita médica por su ID
+        cita = CitaMedica.query.get(id_cita)
+        if cita is None:
+            return jsonify({"mensaje": "Cita no encontrada"}), 404
+
+        # Elimina la cita de la base de datos
+        db.session.delete(cita)
+        db.session.commit()
+
+        return jsonify({"mensaje": "Cita eliminada exitosamente"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"mensaje": "Error al eliminar la cita"}), 500
 
 
 if __name__ == '__main__':
