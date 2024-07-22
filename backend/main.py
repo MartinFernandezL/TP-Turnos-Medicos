@@ -120,6 +120,7 @@ def crear_cita(id_paciente):
         hora = request.form.get("hora")
 
         
+        
         # Crear nueva cita
         nueva_cita = CitaMedica(
             id_paciente=id_paciente,
@@ -157,6 +158,39 @@ def eliminar_cita(id_cita):
     except Exception as e:
         db.session.rollback()
         return jsonify({"mensaje": "Error al eliminar la cita"}), 500
+
+
+
+#editar cita
+
+@app.route("/pacientes/<id_cita>/<id_paciente>", methods=["PUT"])
+def editar_cita(id_cita, id_paciente):
+    try:
+        # Validar y convertir datos
+        nuevo_id_doctor = request.form.get("id_doctor")
+        dia = request.form.get("dia")
+        hora = request.form.get("hora")
+
+        cita = CitaMedica.query.filter_by(id=id_cita).first()
+        
+        # Crear nueva cita
+        cita.id = id_cita
+        cita.id_paciente = id_paciente
+        cita.id_doctor = nuevo_id_doctor
+        cita.fecha_cita = dia
+        cita.hora_cita = hora
+
+        # Agregar y confirmar la nueva cita en la base de datos
+        
+        db.session.commit()
+
+        return jsonify({'cita': {'id': nueva_cita.id }}), 201
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": "No se pudo registrar la cita"})
+
+
+
 
 
 if __name__ == '__main__':

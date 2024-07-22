@@ -33,14 +33,14 @@
             const container = document.getElementById("nombre_paciente");
             container.innerText = content.nombre
         }
+
         
 
         function parse_citas(content) {
             const container = document.getElementById("citas");
             for (let index = 0; index < content.length; index++) {
                 const item = document.createElement("p");
-                item.innerHTML = `Doctor: ${content[index].doctor}  - Especialidad: ${content[index].especialidad} - Fecha: ${content[index].fecha_cita} - Hora: ${content[index].hora_cita} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button class="btn btn-danger" onclick="remove_character(${content[index].id_cita})">Cancelar</button>`;
-
+                item.innerHTML = `Doctor: ${content[index].doctor}  - Especialidad: ${content[index].especialidad} - Fecha: ${content[index].fecha_cita} - Hora: ${content[index].hora_cita} <button class="btn btn-danger" onclick="remove_character(${content[index].id_cita})">Cancelar</button> <a class="btn btn-warning" href="editar?id=${content[index].id_cita}/"> Editar</a>`;
                   
 
                 container.append(item);
