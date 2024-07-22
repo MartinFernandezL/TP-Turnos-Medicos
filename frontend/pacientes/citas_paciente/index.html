@@ -4,23 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hospital Dev</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Hospital Dev</h1>
+        <h1>Turnos de <span id="nombre_paciente"></span></h1>
     </header>
 
     <div class="lista-pacientes" id="pacientes">
         <h2>Pacientes</h2>
     </div>
 
+
     <div class="button-container">
         <button onclick="location.href='../index.html'">Volver</button>
     </div>
-
-
-
 
 
     <script>
@@ -29,15 +27,8 @@
         }
 
         function parse_data(content) {
-            const container = document.getElementById("pacientes");
-            for (let index = 0; index < content.length; index++) {
-                const item = document.createElement("p");
-                item.innerHTML = `<a href="citas_paciente?id=${content[index].id}" target="_blank">${content[index].nombre}</a> - Edad: ${content[index].edad} - DNI: ${content[index].dni}`;
-
-                  
-
-                container.append(item);
-            }
+            const container = document.getElementById("nombre_paciente");
+            container.innerText = content.nombre
         }
 
         function request_error(error) {
@@ -45,7 +36,10 @@
             console.log(error);
         }
 
-        fetch("http://localhost:5000/pacientes")
+        let params = window.location.search;
+        let id = new URLSearchParams(params).get("id");
+
+        fetch("http://localhost:5000/pacientes/"+id)
             .then(response_received)
             .then(parse_data)
             .catch(request_error)

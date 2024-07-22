@@ -27,7 +27,8 @@ def pacientes():
                 'id': paciente.id,
                 'nombre': paciente.nombre,
                 'edad': paciente.edad,
-                'genero': paciente.genero           
+                'genero': paciente.genero,
+                'dni': paciente.dni          
             }
             pacientes_data.append(paciente_data)
         return jsonify(pacientes_data)
