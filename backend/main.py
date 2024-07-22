@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from models import db, Paciente, Doctor, CitaMedica
-
+import datetime
 
 app = Flask(__name__)
+CORS(app)
 port = 5000
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://martin:martin@localhost:5432/tpintro'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -13,6 +15,119 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 def hello_world():
     return 'Hello world!'
 
+
+#Mostrar todos los pacientes
+@app.route("/pacientes/", methods=["GET"])  
+def pacientes():
+    try:
+        pacientes = Paciente.query.all()
+        pacientes_data = []
+        for paciente in pacientes:
+            paciente_data = {
+                'id': paciente.id,
+                'nombre': paciente.nombre,
+                'edad': paciente.edad,
+                'genero': paciente.genero           
+            }
+            pacientes_data.append(paciente_data)
+        return jsonify(pacientes_data)
+    except:
+        return jsonify({"mensaje": "No hay pacientes registrados"})
+
+
+
+# Mostrar un paciente
+@app.route("/pacientes/<id_paciente>", methods=["GET"])
+def paciente(id_paciente):
+    try:
+        paciente = Paciente.query.get(id_paciente)
+        
+        paciente_data = {
+                'id': paciente.id,
+                'nombre': paciente.nombre,
+                'edad': paciente.edad,
+                'genero': paciente.genero,
+                'dni': paciente.dni
+        }
+        return jsonify(paciente_data)
+    except:
+        return jsonify("Error"), 404
+
+
+
+
+#Crear Paciente
+@app.route("/pacientes", methods=["POST"])
+def crear_paciente():
+    try:
+        data = request.json
+        nuevo_nombre = data.get('nombre') # saca del body el atributo nombre 
+        nuevo_genero = data.get('genero')
+        nueva_edad = data.get('edad')
+        nuevo_dni = data.get('dni')
+        nuevo_paciente = Paciente(nombre = nuevo_nombre, genero = nuevo_genero, edad = nueva_edad, dni = nuevo_dni) # crea una instancia de paciente
+        db.session.add(nuevo_paciente) # agrega el paciente a la bdd
+        db.session.commit()
+
+        return jsonify({'paciente': {'id': nuevo_paciente.id, 
+                                   'nombre': nuevo_paciente.nombre, 
+                                   'genero': nuevo_paciente.genero,
+                                   'edad': nuevo_paciente.edad,
+                                   'dni': nuevo_paciente.dni }}), 201
+    except:
+        return jsonify({"mensaje": "No se pudo registrar el paciente"})
+
+
+
+
+
+
+
+
+# Mostrar citas de un paciente
+@app.route("/pacientes/<id_paciente>/citas", methods=["GET"])
+def citas_de_paciente(id_paciente):
+    try:
+        citas = CitaMedica.query.where(CitaMedica.id_paciente == id_paciente).all()
+        
+        citas_data = []
+        for cita in citas:
+            cita_data = {
+                'id': cita.id,
+                'id_doctor': cita.id_doctor,
+                'fecha_cita': cita.fecha_cita,
+                'hora_cita': cita.hora_cita,
+                'completada': cita.completada           
+            }
+            citas_data.append(cita_data)
+        return jsonify(citas_data)
+    except:
+        return jsonify({"mensaje": "No hay citas registradas"})
+
+
+
+
+#Crear Cita medica
+@app.route("/pacientes/<id_paciente>/nueva_cita/<id_doctor>", methods=["POST"])
+def crear_cita(id_paciente, id_doctor):
+    try:
+        data = request.json
+        nueva_fecha_cita = data.get('fecha_cita')
+        nueva_hora_cita = data.get('hora_cita')
+
+
+        nueva_cita = CitaMedica(id_paciente = id_paciente, id_doctor = id_doctor, fecha_cita = nueva_fecha_cita, hora_cita = nueva_hora_cita) # crea una instancia de paciente
+        db.session.add(nueva_cita) # agrega el paciente a la bdd
+        db.session.commit()
+
+        return jsonify({'cita': {'id': nueva_cita.id }}), 201
+    except Exception as error:
+        print(error)
+        return jsonify({"mensaje": "No se pudo registrar la cita"})
+
+
+
+
 if __name__ == '__main__':
     print('Starting server...')
     db.init_app(app)
@@ -20,3 +135,4 @@ if __name__ == '__main__':
         db.create_all()
     app.run(host='0.0.0.0', debug=True, port=port)
     print('Started...')
+
