@@ -13,7 +13,7 @@ pip install flask-cors
 ## Correr
 
 ```bash
-sudo systemctl status postgresql
+sudo systemctl start postgresql
 
 source venv/bin/activate
 cd backend
