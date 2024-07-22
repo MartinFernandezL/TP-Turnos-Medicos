@@ -100,8 +100,7 @@ def citas_de_paciente(id_paciente):
                 'especialidad': doctor.especialidad,
                 'doctor': doctor.nombre,
                 'fecha_cita': cita.fecha_cita,
-                'hora_cita': cita.hora_cita,
-                'completada': cita.completada           
+                'hora_cita': cita.hora_cita,           
             }
             citas_data.append(cita_data)
         return jsonify(citas_data)
@@ -112,22 +111,33 @@ def citas_de_paciente(id_paciente):
 
 
 #Crear Cita medica
-@app.route("/pacientes/<id_paciente>/nueva_cita/<id_doctor>", methods=["POST"])
-def crear_cita(id_paciente, id_doctor):
+@app.route("/pacientes/<id_paciente>", methods=["POST"])
+def crear_cita(id_paciente):
     try:
-        data = request.json
-        nueva_fecha_cita = data.get('fecha_cita')
-        nueva_hora_cita = data.get('hora_cita')
+        # Validar y convertir datos
+        nuevo_id_doctor = request.form.get("id_doctor")
+        dia = request.form.get("dia")
+        hora = request.form.get("hora")
 
+        
+        # Crear nueva cita
+        nueva_cita = CitaMedica(
+            id_paciente=id_paciente,
+            id_doctor=nuevo_id_doctor,
+            fecha_cita=dia,
+            hora_cita=hora
+            
+        )
 
-        nueva_cita = CitaMedica(id_paciente = id_paciente, id_doctor = id_doctor, fecha_cita = nueva_fecha_cita, hora_cita = nueva_hora_cita) # crea una instancia de paciente
-        db.session.add(nueva_cita) # agrega el paciente a la bdd
+        # Agregar y confirmar la nueva cita en la base de datos
+        db.session.add(nueva_cita)
         db.session.commit()
 
         return jsonify({'cita': {'id': nueva_cita.id }}), 201
     except Exception as error:
         print(error)
         return jsonify({"mensaje": "No se pudo registrar la cita"})
+
 
 
 #Borrar Cita

@@ -15,6 +15,9 @@
         <h2>Pacientes</h2>
     </div>
 
+    <div class="button-container">
+        <button onclick="location.href='/crear_cita'">Nuevo Turno</button>
+    </div>
 
     <div class="button-container">
         <button onclick="location.href='../index.html'">Volver</button>
@@ -36,7 +39,7 @@
             const container = document.getElementById("citas");
             for (let index = 0; index < content.length; index++) {
                 const item = document.createElement("p");
-                item.innerHTML = `Doctor: ${content[index].doctor}  - Especialidad: ${content[index].especialidad} - Fecha: ${content[index].fecha_cita} - Hora: ${content[index].hora_cita} <button class="btn btn-danger" onclick="remove_character(${content[index].id_cita})">Cancelar</button>`;
+                item.innerHTML = `Doctor: ${content[index].doctor}  - Especialidad: ${content[index].especialidad} - Fecha: ${content[index].fecha_cita} - Hora: ${content[index].hora_cita} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button class="btn btn-danger" onclick="remove_character(${content[index].id_cita})">Cancelar</button>`;
 
                   
 
@@ -71,14 +74,14 @@
             if (data.success) {
                 alert("An error has occurred. Try again")
             } else {
-                alert("Character removed successfully")
+                alert("Turno eliminado con Exito")
                 window.location.href = "?id="+id;
             }
         }
 
 
         function remove_character(cita) {
-            const confirmation = confirm(`Are you sure you want to remove character ${cita}?`)
+            const confirmation = confirm(`Estas seguro que queres cancelar tu turno?`)
             if (!confirmation) {
                 return;
             }

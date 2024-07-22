@@ -27,4 +27,3 @@ class CitaMedica(db.Model):
     id_doctor = db.Column(db.Integer, db.ForeignKey('doctor.id'))
     fecha_cita = db.Column(db.String(20), nullable=False)
     hora_cita = db.Column(db.String(20), nullable=False)
-    completada = db.Column(db.Boolean, nullable=False, default=False)
