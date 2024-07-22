@@ -89,13 +89,16 @@ def crear_paciente():
 @app.route("/pacientes/<id_paciente>/citas", methods=["GET"])
 def citas_de_paciente(id_paciente):
     try:
-        citas = CitaMedica.query.where(CitaMedica.id_paciente == id_paciente).all()
+        #citas = CitaMedica.query.where(CitaMedica.id_paciente == id_paciente).all()
         
+        citas = db.session.query(CitaMedica, Doctor).filter(CitaMedica.id_doctor == Doctor.id).filter(CitaMedica.id_paciente == id_paciente).all()
+
         citas_data = []
-        for cita in citas:
+        for (cita, doctor) in citas:
             cita_data = {
                 'id': cita.id,
-                'id_doctor': cita.id_doctor,
+                'especialidad': doctor.especialidad,
+                'doctor': doctor.nombre,
                 'fecha_cita': cita.fecha_cita,
                 'hora_cita': cita.hora_cita,
                 'completada': cita.completada           
