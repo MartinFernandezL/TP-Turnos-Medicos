@@ -21,10 +21,12 @@ h1 {
     color: #333;
 }
 
+
 .button-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 20px;
 }
 
 button {
@@ -33,7 +35,7 @@ button {
     border: none;
     padding: 15px 30px;
     font-size: 1em;
-    margin: 10px;
+    margin: 20px;
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s;
@@ -48,7 +50,7 @@ button:hover {
 
 .lista-pacientes {
     width: 80%;
-    max-width: 600px;
+    max-width: 800px;
     background-color: #e1e1e1;
     padding: 20px;
     border-radius: 5px;
@@ -77,7 +79,7 @@ button:hover {
     border: none;
     padding: 5px 10px;
     font-size: 1em;
-    margin: 5px;
+    margin: 20px;
     cursor: pointer;
     border-radius: 1px;
     transition: background-color 0.3s;
